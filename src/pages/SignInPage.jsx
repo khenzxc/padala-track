@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Pinalitan ang setView ng useNavigate
 import { Globe, ArrowLeft, Lock, Mail, Eye, EyeOff, Sparkles } from 'lucide-react';
 
-export default function SignInPage({ setView }) {
+export default function SignInPage({ setIsAuthenticated }) {
+  const navigate = useNavigate(); // Hook para sa paglipat ng totoong URL path
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setView('dashboard');
+    // 1. Gawing true ang auth status (opsyonal, depende sa App.jsx mo)
+    if (setIsAuthenticated) setIsAuthenticated(true);
+    
+    // 2. I-redirect ang user sa totoong /dashboard path
+    navigate('/dashboard');
   };
 
   return (
@@ -19,10 +25,10 @@ export default function SignInPage({ setView }) {
       <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-blue-500/15 blur-[130px] pointer-events-none" />
       <div className="absolute top-[30%] right-[20%] w-[35vw] h-[35vw] rounded-full bg-sky-400/10 blur-[100px] pointer-events-none" />
 
-      {/* Back to Home Button */}
+      {/* Back to Home Button using URL router */}
       <button 
-        onClick={() => setView('landing')}
-        className="absolute top-6 left-6 inline-flex items-center space-x-2 text-sm font-semibold text-neutral-600 hover:text-blue-600 transition-colors group z-10 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-full shadow-xs border border-neutral-200/40"
+        onClick={() => navigate('/')}
+        className="absolute top-6 left-6 inline-flex items-center space-x-2 text-sm font-semibold text-neutral-600 hover:text-blue-600 transition-colors group z-10 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-full shadow-xs border border-neutral-200/40 cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
         <span>Back to Home</span>
@@ -75,7 +81,7 @@ export default function SignInPage({ setView }) {
               </label>
               <button 
                 type="button"
-                className="text-[12px] font-semibold text-blue-600 hover:underline"
+                className="text-[12px] font-semibold text-blue-600 hover:underline cursor-pointer"
               >
                 Forgot?
               </button>
@@ -95,7 +101,7 @@ export default function SignInPage({ setView }) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-blue-500 transition-colors"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-blue-500 transition-colors cursor-pointer"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -105,7 +111,7 @@ export default function SignInPage({ setView }) {
           {/* Sign In Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-md shadow-blue-500/20 transition active:scale-[0.99] mt-2 text-sm flex items-center justify-center space-x-2"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-md shadow-blue-500/20 transition active:scale-[0.99] mt-2 text-sm flex items-center justify-center space-x-2 cursor-pointer"
           >
             <span>Sign In with Family Code</span>
           </button>
@@ -116,8 +122,8 @@ export default function SignInPage({ setView }) {
           <p className="text-xs text-neutral-500">
             New to the platform?{' '}
             <button 
-              onClick={() => setView('getstarted')}
-              className="font-bold text-blue-600 hover:underline"
+              onClick={() => navigate('/get-started')}
+              className="font-bold text-blue-600 hover:underline cursor-pointer"
             >
               Create dynamic pool
             </button>

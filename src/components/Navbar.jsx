@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Pinalitan ang setView ng useNavigate
 import { ShieldCheck } from 'lucide-react';
 
-export default function Navbar({ setView }) {
+export default function Navbar() {
+  const navigate = useNavigate(); // Hook para sa routing navigation
+
   return (
     // 🛠️ FIX: Binabaan ang vertical padding (mula py-3 naging py-2.5) para sa ultra-compact form factor
     <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-neutral-200/30 px-4 py-2.5 sm:py-3 transition-all select-none">
@@ -9,7 +12,7 @@ export default function Navbar({ setView }) {
         
         {/* Brand Logo - Fully Clickable with Micro-interactions */}
         <div 
-          onClick={() => setView && setView('landing')} 
+          onClick={() => navigate('/')} // Itatapon ang user sa Landing Page
           className="flex items-center space-x-1.5 cursor-pointer group active:scale-98 transition-all duration-200"
         >
           {/* 🛠️ FIX: Pinaliit ang image block padding at core structure bounds */}
@@ -27,7 +30,7 @@ export default function Navbar({ setView }) {
           
           {/* Sign In Button: Minimalist clickable layout */}
           <button 
-            onClick={() => setView && setView('signin')}
+            onClick={() => navigate('/signin')} // Babatakin papuntang Sign In page URL
             className="px-2 py-1 text-xs sm:text-sm font-semibold text-neutral-500 hover:text-neutral-900 rounded-lg hover:bg-neutral-100/60 active:scale-95 transition-all duration-150 cursor-pointer"
           >
             Sign In
@@ -35,7 +38,7 @@ export default function Navbar({ setView }) {
           
           {/* Get Started Button: Compact pill structure */}
           <button 
-            onClick={() => setView && setView('getstarted')}
+            onClick={() => navigate('/get-started')} // Papuntang Get Started registration layout
             className="px-3.5 py-1.5 text-xs sm:text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-full shadow-xs active:scale-95 hover:scale-[1.02] transition-all duration-150 cursor-pointer"
           >
             Get Started
