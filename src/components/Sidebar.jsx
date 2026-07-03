@@ -6,16 +6,15 @@ import {
   FileSpreadsheet, 
   ShieldCheck, 
   User, 
-  LogOut 
+  LogOut,
+  MessageSquare // PINALITAN: Idinagdag para sa Dispute Center Icon
 } from 'lucide-react';
 
-export default function Sidebar() {
+export default function Sidebar({ setIsAuthenticated }) { 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Helper para malaman kung ano ang kasalukuyang URL para sa active styles (blue highlight)
   const isActive = (path) => {
-    // Para sa budgetpools, gagana rin ito kahit pumasok sa loob ng subpage (e.g., /budgetpools/1)
     if (path === '/budgetpools') {
       return location.pathname.startsWith('/budgetpools');
     }
@@ -24,7 +23,8 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     console.log('Logging out...');
-    // navigate('/'); // I-uncomment ito para bumalik sa Landing Page pagkatapos mag-logout
+    setIsAuthenticated(false); // Babaguhin ang state sa App.js
+    navigate('/');            // Babalik sa Landing Page
   };
 
   return (
@@ -72,6 +72,15 @@ export default function Sidebar() {
             >
               <FileSpreadsheet className="h-4 w-4" />
               <span>Audit Ledger</span>
+            </button>
+
+            {/* PINALITAN: BAGONG TAB PARA SA DISPUTE CENTER / CHAT */}
+            <button 
+              onClick={() => navigate('/disputes')}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive('/disputes') ? 'bg-blue-50/80 text-blue-600' : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900'}`}
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span>Dispute Center</span>
             </button>
 
             {/* PROFILE BUTTON */}
@@ -127,20 +136,21 @@ export default function Sidebar() {
             <span className="text-[10px] mt-1 tracking-tight">Ledger</span>
           </button>
 
+          {/* PINALITAN: DISPUTE CHAT ICON SA MOBILE */}
+          <button 
+            onClick={() => navigate('/disputes')}
+            className={`flex flex-col items-center justify-center flex-1 py-1 transition-all cursor-pointer ${isActive('/disputes') ? 'text-blue-600 font-bold' : 'text-neutral-400 font-medium'}`}
+          >
+            <MessageSquare className="h-5 w-5" />
+            <span className="text-[10px] mt-1 tracking-tight">Disputes</span>
+          </button>
+
           <button 
             onClick={() => navigate('/profile')}
             className={`flex flex-col items-center justify-center flex-1 py-1 transition-all cursor-pointer ${isActive('/profile') ? 'text-blue-600 font-bold' : 'text-neutral-400 font-medium'}`}
           >
             <User className="h-5 w-5" />
             <span className="text-[10px] mt-1 tracking-tight">Profile</span>
-          </button>
-
-          <button 
-            onClick={handleLogout}
-            className="flex flex-col items-center justify-center flex-1 py-1 text-neutral-400 hover:text-red-500 transition-all cursor-pointer"
-          >
-            <LogOut className="h-5 w-5" />
-            <span className="text-[10px] mt-1 tracking-tight">Log Out</span>
           </button>
 
         </div>

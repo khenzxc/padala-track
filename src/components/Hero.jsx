@@ -7,7 +7,8 @@ export default function Hero({ userRole, setUserRole }) {
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
         {/* Left Column: Heading and Controls */}
-        <div className="lg:col-span-6 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start">
+        {/* Binago mula space-y-6 patungong space-y-8 sa mobile para humaba at magkaroon ng magandang hingahan ang mga elemento */}
+        <div className="lg:col-span-6 space-y-8 sm:space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start">
 
           {/* Platform Status Badge */}
           <div className="inline-flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold border border-blue-200 shadow-sm">
@@ -16,38 +17,42 @@ export default function Hero({ userRole, setUserRole }) {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 leading-[1.2] max-w-xl">
+          {/* Ginawang leading-[1.3] sa mobile para hindi dikit-dikit ang text kung mag-wrap sa maliit na screen */}
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-900 leading-[1.3] sm:leading-[1.2] max-w-xl">
             Transparent Spending. <br />
             <span className="text-blue-500">Absolute Family Trust.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-neutral-600 max-w-xl leading-relaxed font-normal">
+          {/* Tinaasan ang leading-relaxed at pinaluwag ang text tracking para mas humaba nang kaunti ang talata sa mobile */}
+          <p className="text-base sm:text-lg text-neutral-600 max-w-xl leading-relaxed tracking-wide sm:tracking-normal font-normal">
             A next-generation <strong className="font-bold text-neutral-800">Post-Remittance Audit Ledger</strong> built for modern global families. Track dynamic project allocations, verify real-world merchant receipts via cloud AI diagnostics, and eliminate financial friction.
           </p>
 
-          {/* User Role Split Controller */}
-          <div className="w-full space-y-4 pt-2 max-w-md">
+          {/* User Role Split Controller & CTA Container */}
+          {/* Nagdagdag ng pt-4 sa mobile at ginawang space-y-5 para humaba ang layout pababa bago makarating sa button */}
+          <div className="w-full space-y-5 sm:space-y-4 pt-4 sm:pt-2 max-w-md">
             <div className="bg-neutral-200/80 p-1.5 rounded-2xl flex w-full border border-neutral-300/50">
               <button
                 type="button"
                 onClick={() => setUserRole('ofw')}
-                className={`flex-1 py-3 text-sm sm:text-base font-bold rounded-xl transition-all ${userRole === 'ofw' ? 'bg-white text-neutral-900 shadow-md' : 'text-neutral-500'}`}
+                className={`flex-1 py-3.5 text-sm sm:text-base font-bold rounded-xl transition-all ${userRole === 'ofw' ? 'bg-white text-neutral-900 shadow-md' : 'text-neutral-500'}`}
               >
                 Sender (OFW)
               </button>
               <button
                 type="button"
                 onClick={() => setUserRole('beneficiary')}
-                className={`flex-1 py-3 text-sm sm:text-base font-bold rounded-xl transition-all ${userRole === 'beneficiary' ? 'bg-white text-neutral-900 shadow-md' : 'text-neutral-500'}`}
+                className={`flex-1 py-3.5 text-sm sm:text-base font-bold rounded-xl transition-all ${userRole === 'beneficiary' ? 'bg-white text-neutral-900 shadow-md' : 'text-neutral-500'}`}
               >
                 Beneficiary (Family)
               </button>
             </div>
 
             {/* Premium CTA Button */}
+            {/* Dinagdagan ang vertical padding (py-4.5) sa mobile para mas makapal at mahaba tingnan ang button */}
             <div className="w-full">
-              <button className="w-full px-6 py-4 font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-2xl shadow-lg transition active:scale-98 flex items-center justify-center space-x-2 text-base sm:text-lg">
+              <button className="w-full px-6 py-4.5 sm:py-4 font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-2xl shadow-lg transition active:scale-98 flex items-center justify-center space-x-2 text-base sm:text-lg">
                 <span>{userRole === 'ofw' ? 'Create Budget Pool' : 'Connect Family Code'}</span>
                 <ArrowRight className="h-5 w-5" />
               </button>
@@ -79,7 +84,7 @@ export default function Hero({ userRole, setUserRole }) {
 
               <div className="p-3 space-y-3 flex-1 overflow-y-auto text-left">
                 
-                {/* Active Budget Pool Widget (Nagbabago depende sa Role) */}
+                {/* Active Budget Pool Widget */}
                 <div className="bg-white rounded-xl p-3 shadow-sm border border-neutral-200">
                   <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">
                     {userRole === 'ofw' ? 'Remitted Pool Dashboard' : 'Active Pool Ledger'}
@@ -107,9 +112,8 @@ export default function Hero({ userRole, setUserRole }) {
                   </div>
                 </div>
 
-                {/* AI Audit / Action Card (Nagbabago depende sa Role) */}
+                {/* AI Audit / Action Card */}
                 {userRole === 'ofw' ? (
-                  /* KUNG OFW: Ipakita ang AI Audit Alert (Fraud/Canva detection) */
                   <div className="bg-white rounded-xl p-3 shadow-sm border border-neutral-200 space-y-1.5 transition-all animate-fadeIn">
                     <div className="flex items-center justify-between">
                       <span className="bg-amber-100 text-amber-900 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">
@@ -137,7 +141,6 @@ export default function Hero({ userRole, setUserRole }) {
                     </div>
                   </div>
                 ) : (
-                  /* KUNG BENEFICIARY: Ipakita ang Receipt Upload Success State */
                   <div className="bg-white rounded-xl p-3 shadow-sm border border-neutral-200 space-y-1.5 transition-all animate-fadeIn">
                     <div className="flex items-center justify-between">
                       <span className="bg-emerald-100 text-emerald-900 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center space-x-1">

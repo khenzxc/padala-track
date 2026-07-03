@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, CheckCircle2, Clock, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-export default function AuditRegistryPage({ transactions }) {
+export default function AuditRegistryPage({ transactions, onSelectTransaction }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredTransactions = transactions.filter(tx => 
@@ -56,7 +56,11 @@ export default function AuditRegistryPage({ transactions }) {
             <tbody className="divide-y divide-neutral-100 font-medium text-neutral-600">
               {filteredTransactions.length > 0 ? (
                 filteredTransactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-neutral-50/40 transition-colors">
+                  <tr 
+                    key={tx.id} 
+                    onClick={() => onSelectTransaction(tx.id)}
+                    className="hover:bg-neutral-50/40 transition-colors cursor-pointer"
+                  >
                     <td className="px-5 py-4 font-mono text-neutral-900 font-bold text-xs">{tx.id}</td>
                     <td className="px-5 py-4">
                       <div>

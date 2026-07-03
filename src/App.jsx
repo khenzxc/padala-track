@@ -5,20 +5,20 @@ import Sidebar from './components/Sidebar';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/SignInPage';
 import GetStartedPage from './pages/GetStartedPage';
-import DashboardPage from './pages/DashboardPage'; // Gamit ang orihinal mong file path
+import DashboardPage from './pages/DashboardPage'; 
 
-function AppLayout({ children, isAuthenticated }) {
+function AppLayout({ children, isAuthenticated, setIsAuthenticated }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // Listahan ng flat routes kung saan dapat lumabas ang Sidebar mo
-  const privateRoutes = ['/dashboard', '/budgetpools', '/auditledger', '/profile'];
+  // PINALITAN: Idinagdag ang '/disputes' sa listahan ng private routes upang mag-render ang Sidebar
+  const privateRoutes = ['/dashboard', '/budgetpools', '/auditledger', '/disputes', '/profile'];
   const isPrivateRoute = isAuthenticated && privateRoutes.some(route => currentPath.startsWith(route));
 
   if (isPrivateRoute) {
     return (
       <div className="flex min-h-screen bg-[#F2F2F7] font-['-apple-system',_BlinkMacSystemFont,_'SF_Pro_Display',_sans-serif]">
-        <Sidebar />
+        <Sidebar setIsAuthenticated={setIsAuthenticated} />
         <main className="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8 transition-all duration-300">
           {children}
         </main>
@@ -42,14 +42,14 @@ export default function App() {
 
   return (
     <Router>
-      <AppLayout isAuthenticated={isAuthenticated}>
+      <AppLayout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}>
         <Routes>
           {/* PUBLIC ROUTES */}
           <Route path="/" element={<LandingPage userRole={userRole} setUserRole={setUserRole} />} />
           <Route path="/signin" element={<SignInPage setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/get-started" element={<GetStartedPage />} />
 
-          {/* FLAT ROUTING GAMIT ANG DASHBOARDPAGE AT IBA PANG SUB-VIEWS */}
+          {/* GLOBAL SECURITY GUARD: Kung HINDI authenticated, automatic redirect sa /signin */}
           <Route 
             path="/dashboard" 
             element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="overview" /> : <Navigate to="/signin" replace />} 
@@ -62,6 +62,13 @@ export default function App() {
             path="/auditledger" 
             element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="audit" /> : <Navigate to="/signin" replace />} 
           />
+          
+          {/* PINALITAN: BAGONG ROUTE PARA SA DISPUTE CENTER CHAT */}
+          <Route 
+            path="/disputes" 
+            element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="disputes" /> : <Navigate to="/signin" replace />} 
+          />
+
           <Route 
             path="/profile" 
             element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="profile" /> : <Navigate to="/signin" replace />} 
