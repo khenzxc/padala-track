@@ -7,18 +7,30 @@ import SignInPage from './pages/SignInPage';
 import GetStartedPage from './pages/GetStartedPage';
 import DashboardPage from './pages/DashboardPage'; 
 
-function AppLayout({ children, isAuthenticated, setIsAuthenticated }) {
+// 🚨 MGA BAGONG IMPORTS PARA SA BENEFICIARY SIDE
+import BeneficiarySidebar from './components/BeneficiarySidebar';
+import BeneficiaryDashboardPage from './pages/BeneficiaryDashboardPage'; 
+
+// 🛠️ PINALITAN: Tinatanggap na ang userRole bilang prop para sa tamang pag-render ng sidebar
+function AppLayout({ children, isAuthenticated, setIsAuthenticated, userRole }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // PINALITAN: Idinagdag ang '/disputes' sa listahan ng private routes upang mag-render ang Sidebar
-  const privateRoutes = ['/dashboard', '/budgetpools', '/auditledger', '/disputes', '/profile'];
+  // PINALITAN: Idinagdag ang '/beneficiary-dashboard' sa listahan ng mga nangangailangan ng private layout
+  const privateRoutes = ['/dashboard', '/budgetpools', '/auditledger', '/disputes', '/profile', '/beneficiary-dashboard'];
   const isPrivateRoute = isAuthenticated && privateRoutes.some(route => currentPath.startsWith(route));
 
   if (isPrivateRoute) {
     return (
       <div className="flex min-h-screen bg-[#F2F2F7] font-['-apple-system',_BlinkMacSystemFont,_'SF_Pro_Display',_sans-serif]">
-        <Sidebar setIsAuthenticated={setIsAuthenticated} />
+        
+        {/* 🛠️ AUTOMATIC SIDEBAR SWITCHER: Hiwalay na ang landas ng OFW at Beneficiary Sidebar */}
+        {userRole === 'beneficiary' ? (
+          <BeneficiarySidebar setIsAuthenticated={setIsAuthenticated} />
+        ) : (
+          <Sidebar setIsAuthenticated={setIsAuthenticated} />
+        )}
+        
         <main className="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8 transition-all duration-300">
           {children}
         </main>
@@ -37,41 +49,50 @@ function AppLayout({ children, isAuthenticated, setIsAuthenticated }) {
 }
 
 export default function App() {
-  const [userRole, setUserRole] = useState('ofw');
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [userRole, setUserRole] = useState('ofw'); // Pwedeng 'ofw' o 'beneficiary'
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Naka-default sa true base sa code mo
 
   return (
     <Router>
-      <AppLayout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}>
+      {/* 🛠️ PINALITAN: Ipinasa ang userRole prop dito sa AppLayout wrapper */}
+      <AppLayout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} userRole={userRole}>
         <Routes>
           {/* PUBLIC ROUTES */}
           <Route path="/" element={<LandingPage userRole={userRole} setUserRole={setUserRole} />} />
-          <Route path="/signin" element={<SignInPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route 
+            path="/signin" 
+            element={<SignInPage setIsAuthenticated={setIsAuthenticated} userRole={userRole} setUserRole={setUserRole} />} 
+          />
           <Route path="/get-started" element={<GetStartedPage />} />
 
-          {/* GLOBAL SECURITY GUARD: Kung HINDI authenticated, automatic redirect sa /signin */}
+          {/* 🌍 OFW PRIVATE ROUTES */}
           <Route 
             path="/dashboard" 
-            element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="overview" /> : <Navigate to="/signin" replace />} 
+            element={isAuthenticated && userRole === 'ofw' ? <DashboardPage userRole={userRole} currentView="overview" /> : <Navigate to="/signin" replace />} 
           />
           <Route 
             path="/budgetpools/*" 
-            element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="pools" /> : <Navigate to="/signin" replace />} 
+            element={isAuthenticated && userRole === 'ofw' ? <DashboardPage userRole={userRole} currentView="pools" /> : <Navigate to="/signin" replace />} 
           />
           <Route 
             path="/auditledger" 
-            element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="audit" /> : <Navigate to="/signin" replace />} 
+            element={isAuthenticated && userRole === 'ofw' ? <DashboardPage userRole={userRole} currentView="audit" /> : <Navigate to="/signin" replace />} 
           />
           
-          {/* PINALITAN: BAGONG ROUTE PARA SA DISPUTE CENTER CHAT */}
+          {/* SHARED PRIVATE ROUTES (Para sa parehong roles, gagamit ng DashboardPage configuration) */}
           <Route 
             path="/disputes" 
             element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="disputes" /> : <Navigate to="/signin" replace />} 
           />
-
           <Route 
             path="/profile" 
             element={isAuthenticated ? <DashboardPage userRole={userRole} currentView="profile" /> : <Navigate to="/signin" replace />} 
+          />
+
+          {/* 🇵🇭 EXCLUSIVE BENEFICIARY ROUTE (Ganap na magkabukod na ng dashboard page) */}
+          <Route 
+            path="/beneficiary-dashboard" 
+            element={isAuthenticated && userRole === 'beneficiary' ? <BeneficiaryDashboardPage /> : <Navigate to="/signin" replace />} 
           />
 
           <Route path="*" element={<Navigate to="/" replace />} />
